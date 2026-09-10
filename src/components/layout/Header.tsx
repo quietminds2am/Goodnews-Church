@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, LockKeyhole } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { BrandLogo } from "./BrandLogo";
 import { classNames } from "../../lib/utils";
@@ -54,7 +54,14 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="hidden lg:block">
+        <div className="hidden items-center gap-2 lg:flex">
+          <NavLink
+            to="/admin/login"
+            className="inline-flex items-center gap-1.5 rounded px-3 py-2 text-sm font-medium text-ink-500 hover:text-brand-600"
+          >
+            <LockKeyhole className="h-4 w-4" aria-hidden />
+            Admin
+          </NavLink>
           <NavLink to="/contact" className="btn-primary">
             Get Connected
           </NavLink>
@@ -103,6 +110,13 @@ export function Header() {
               </ul>
               <NavLink to="/contact" className="btn-primary mt-4 w-full">
                 Get Connected
+              </NavLink>
+              <NavLink
+                to="/admin/login"
+                className="mt-3 flex items-center justify-center gap-1.5 rounded px-3 py-2 text-sm font-medium text-ink-500 hover:text-brand-600"
+              >
+                <LockKeyhole className="h-4 w-4" aria-hidden />
+                Admin
               </NavLink>
             </div>
           </motion.nav>

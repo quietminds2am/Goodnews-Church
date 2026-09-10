@@ -1,11 +1,11 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { getSupabaseAdmin } from "./_lib/supabaseAdmin";
-import { getResend, getFromAddress, renderEmailShell } from "./_lib/resend";
+import { sendEmail, renderEmailShell } from "./_lib/mailer";
 import { requireAdmin, HttpError } from "./_lib/auth";
 import { isRateLimited, getClientIp } from "./_lib/rateLimit";
 
 const SITE_URL = process.env.VITE_SITE_URL || "https://www.goodnewsyouthchurch.org";
-const BATCH_SIZE = 50; // Resend batch send limit per request
+const BATCH_SIZE = 50; // sent concurrently per batch, regardless of email provider
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== "POST") {
@@ -51,8 +51,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     await supabaseAdmin.from("email_campaigns").update({ status: "sending" }).eq("id", campaignId);
 
-    const resend = getResend();
-    const from = getFromAddress();
     let sentCount = 0;
     const errors: string[] = [];
 
@@ -60,8 +58,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const batch = members.slice(i, i + BATCH_SIZE);
       const results = await Promise.allSettled(
         batch.map((member) =>
-          resend.emails.send({
-            from,
+          sendEmail({
             to: member.email,
             subject: campaign.subject,
             html: renderEmailShell({

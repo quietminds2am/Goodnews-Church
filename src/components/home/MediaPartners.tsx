@@ -13,21 +13,27 @@ export function MediaPartners() {
         <Reveal>
           <SectionHeading eyebrow="Working together" title="Media & Ministry Partners" align="center" />
         </Reveal>
-      </div>
-      <div className="mt-10">
-        <Marquee>
-          {data.map((asset) => (
-            <img
-              key={asset.id}
-              src={asset.image_url}
-              alt={asset.name}
-              loading="lazy"
-              // Full color, no hover required — the whole point of a
-              // marquee is that every logo gets its moment on screen.
-              className="h-16 w-auto shrink-0 object-contain sm:h-20"
-            />
-          ))}
-        </Marquee>
+
+        {/* Inset card, not full page width — the glow reads as a distinct
+            spotlighted element rather than a page-wide banner. */}
+        <Reveal
+          className="mx-auto mt-10 max-w-4xl rounded-xl border border-brand-500/20 bg-white px-4 py-6 shadow-glow motion-safe:animate-glowPulse sm:px-8 sm:py-8"
+          delay={0.1}
+        >
+          <Marquee>
+            {data.map((asset) => (
+              <img
+                key={asset.id}
+                src={asset.image_url}
+                alt={asset.name}
+                loading="lazy"
+                // Full color, no hover required — the whole point of a
+                // marquee is that every logo gets its moment on screen.
+                className="h-16 w-auto shrink-0 object-contain sm:h-20"
+              />
+            ))}
+          </Marquee>
+        </Reveal>
       </div>
     </section>
   );

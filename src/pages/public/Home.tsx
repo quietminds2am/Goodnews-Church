@@ -1,5 +1,6 @@
 import { Hero } from "../../components/home/Hero";
 import { ServiceTimesCard } from "../../components/home/ServiceTimesCard";
+import { PastorBioCard } from "../../components/home/PastorBioCard";
 import { AnnouncementsPreview } from "../../components/home/AnnouncementsPreview";
 import { UpcomingEventsPreview } from "../../components/home/UpcomingEventsPreview";
 import { AdvertBanner } from "../../components/home/AdvertBanner";
@@ -41,6 +42,7 @@ export default function Home() {
       <Seo path="/" jsonLd={jsonLd} />
       <Hero />
       <ServiceTimesCard />
+      <PastorBioCard />
       <AdvertBanner placement="home_top" />
       <AnnouncementsPreview />
       <UpcomingEventsPreview />

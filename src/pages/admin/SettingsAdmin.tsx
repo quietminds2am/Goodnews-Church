@@ -18,6 +18,7 @@ export default function SettingsAdmin() {
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [ogImage, setOgImage] = useState<string | null>(settings.og_image_url);
+  const [pastorPhoto, setPastorPhoto] = useState<string | null>(settings.pastor_photo_url);
 
   const { register, control, handleSubmit, reset } = useForm<SiteSettings>({ defaultValues: settings });
 
@@ -27,6 +28,7 @@ export default function SettingsAdmin() {
   useEffect(() => {
     reset(settings);
     setOgImage(settings.og_image_url);
+    setPastorPhoto(settings.pastor_photo_url);
   }, [settings, reset]);
 
   async function onSubmit(values: SiteSettings) {
@@ -34,7 +36,7 @@ export default function SettingsAdmin() {
     setSaved(false);
     setError(null);
 
-    const finalValues: SiteSettings = { ...values, og_image_url: ogImage };
+    const finalValues: SiteSettings = { ...values, og_image_url: ogImage, pastor_photo_url: pastorPhoto };
     const rows = Object.entries(finalValues).map(([key, value]) => ({ key, value }));
 
     const { error: upsertError } = await supabase.from("site_settings").upsert(rows, { onConflict: "key" });
@@ -63,6 +65,11 @@ export default function SettingsAdmin() {
             <TextField label="Pastor's title" required {...register("pastor_title")} />
           </div>
           <TextField label="Tagline" required {...register("tagline")} />
+          <div>
+            <label className="label" htmlFor="pastor_bio">Pastor's bio</label>
+            <textarea id="pastor_bio" rows={4} className="input resize-y" {...register("pastor_bio")} />
+          </div>
+          <ImageUploadField label="Pastor's photo" bucket="brand-assets" value={pastorPhoto} onChange={setPastorPhoto} />
         </section>
 
         <section className="card space-y-5 p-6">

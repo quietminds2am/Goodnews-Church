@@ -124,6 +124,8 @@ export interface SiteSettings {
   church_short_name: string;
   pastor_name: string;
   pastor_title: string;
+  pastor_bio: string;
+  pastor_photo_url: string | null;
   tagline: string;
   address: string;
   city: string;

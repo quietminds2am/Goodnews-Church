@@ -11,6 +11,9 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   church_short_name: "Goodnews Youth Church",
   pastor_name: "Dr. Onifade David Kayode",
   pastor_title: "Pastor in Charge",
+  pastor_bio:
+    "Pastor Dr. Onifade David Kayode leads Goodnews Area Youth Church HQ with a heart for raising young people in faith, character, and purpose. Under his leadership, the church has grown into a vibrant community devoted to sound teaching, genuine worship, and discipleship for the next generation.",
+  pastor_photo_url: null,
   tagline: "A house of faith, family, and purpose for every young person.",
   address: "Goodnews Area, Lagos",
   city: "Lagos",

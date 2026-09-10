@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { getSupabaseAdmin } from "./_lib/supabaseAdmin";
-import { getResend, getFromAddress, renderEmailShell } from "./_lib/resend";
+import { sendEmail, renderEmailShell } from "./_lib/mailer";
 
 const SITE_URL = process.env.VITE_SITE_URL || "https://www.goodnewsyouthchurch.org";
 const BATCH_SIZE = 50;
@@ -48,8 +48,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return;
     }
 
-    const resend = getResend();
-    const from = getFromAddress();
     let totalSent = 0;
 
     for (const event of events) {
@@ -79,8 +77,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const batch = members.slice(i, i + BATCH_SIZE);
         const results = await Promise.allSettled(
           batch.map((member) =>
-            resend.emails.send({
-              from,
+            sendEmail({
               to: member.email,
               subject: `Reminder: ${event.title} is tomorrow`,
               html: renderEmailShell({

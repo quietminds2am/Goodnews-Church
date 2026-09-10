@@ -45,6 +45,8 @@ export default {
       boxShadow: {
         card: "0 1px 2px rgba(13,15,19,0.06), 0 1px 8px rgba(13,15,19,0.06)",
         lifted: "0 8px 24px rgba(13,15,19,0.12)",
+        glow: "0 0 0 1px rgba(201,111,34,0.35), 0 0 22px rgba(201,111,34,0.28), 0 0 60px rgba(201,111,34,0.12)",
+        "glow-lg": "0 0 0 1px rgba(201,111,34,0.45), 0 0 32px rgba(201,111,34,0.4), 0 0 90px rgba(201,111,34,0.18)",
       },
       maxWidth: {
         content: "1200px",
@@ -52,10 +54,15 @@ export default {
       keyframes: {
         fadeIn: { from: { opacity: 0, transform: "translateY(6px)" }, to: { opacity: 1, transform: "translateY(0)" } },
         marquee: { from: { transform: "translateX(0)" }, to: { transform: "translateX(-50%)" } },
+        glowPulse: {
+          "0%, 100%": { boxShadow: "0 0 0 1px rgba(201,111,34,0.35), 0 0 22px rgba(201,111,34,0.28), 0 0 60px rgba(201,111,34,0.12)" },
+          "50%": { boxShadow: "0 0 0 1px rgba(201,111,34,0.5), 0 0 34px rgba(201,111,34,0.42), 0 0 90px rgba(201,111,34,0.2)" },
+        },
       },
       animation: {
         fadeIn: "fadeIn 0.4s ease-out",
         marquee: "marquee 30s linear infinite",
+        glowPulse: "glowPulse 3.5s ease-in-out infinite",
       },
     },
   },
