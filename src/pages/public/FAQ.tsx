@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 import { Seo } from "../../components/seo/Seo";
 import { classNames } from "../../lib/utils";
 import { useSiteSettings } from "../../context/SiteSettingsContext";
+import { Reveal } from "../../components/motion/Reveal";
+import { StaggerGroup, StaggerItem } from "../../components/motion/StaggerGroup";
 
 export default function FAQ() {
   const { settings } = useSiteSettings();
@@ -46,18 +49,18 @@ export default function FAQ() {
       <Seo title="Frequently Asked Questions" path="/faq" description="Answers to common questions about visiting and joining us." jsonLd={jsonLd} />
 
       <section className="bg-ink-900 py-16 text-white sm:py-20">
-        <div className="container-page">
+        <Reveal className="container-page">
           <p className="text-sm font-semibold uppercase tracking-widest text-brand-300">Have Questions?</p>
           <h1 className="mt-3 text-3xl font-semibold sm:text-4xl">Frequently Asked Questions</h1>
-        </div>
+        </Reveal>
       </section>
 
       <div className="container-page max-w-3xl py-16">
-        <ul className="divide-y divide-ink-100 rounded-lg border border-ink-100">
+        <StaggerGroup as="ul" className="divide-y divide-ink-100 rounded-lg border border-ink-100">
           {faqs.map((faq, i) => {
             const isOpen = openIndex === i;
             return (
-              <li key={faq.q}>
+              <StaggerItem as="li" key={faq.q}>
                 <h2>
                   <button
                     type="button"
@@ -73,15 +76,24 @@ export default function FAQ() {
                     />
                   </button>
                 </h2>
-                {isOpen && (
-                  <div id={`faq-panel-${i}`} className="px-5 pb-5 text-ink-600">
-                    {faq.a}
-                  </div>
-                )}
-              </li>
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      id={`faq-panel-${i}`}
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                      className="overflow-hidden"
+                    >
+                      <div className="px-5 pb-5 text-ink-600">{faq.a}</div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </StaggerItem>
             );
           })}
-        </ul>
+        </StaggerGroup>
       </div>
     </>
   );

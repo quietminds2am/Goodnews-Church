@@ -2,6 +2,7 @@ import { Mail, Phone, MapPin } from "lucide-react";
 import { ContactForm } from "../../components/forms/ContactForm";
 import { Seo } from "../../components/seo/Seo";
 import { useSiteSettings } from "../../context/SiteSettingsContext";
+import { Reveal } from "../../components/motion/Reveal";
 
 export default function Contact() {
   const { settings } = useSiteSettings();
@@ -11,14 +12,14 @@ export default function Contact() {
       <Seo title="Contact Us" path="/contact" description={`Get in touch with ${settings.church_name}.`} />
 
       <section className="bg-ink-900 py-16 text-white sm:py-20">
-        <div className="container-page">
+        <Reveal className="container-page">
           <p className="text-sm font-semibold uppercase tracking-widest text-brand-300">We'd love to hear from you</p>
           <h1 className="mt-3 text-3xl font-semibold sm:text-4xl">Contact Us</h1>
-        </div>
+        </Reveal>
       </section>
 
       <div className="container-page grid gap-10 py-16 lg:grid-cols-5">
-        <div className="lg:col-span-2">
+        <Reveal className="lg:col-span-2">
           <h2 className="text-xl font-semibold">Reach us directly</h2>
           <ul className="mt-5 space-y-4 text-ink-600">
             <li className="flex items-start gap-3">
@@ -40,14 +41,14 @@ export default function Contact() {
               </a>
             </li>
           </ul>
-        </div>
+        </Reveal>
 
-        <div className="card p-6 sm:p-8 lg:col-span-3">
+        <Reveal className="card p-6 sm:p-8 lg:col-span-3" delay={0.1}>
           <h2 className="text-xl font-semibold">Send us a message</h2>
           <div className="mt-6">
             <ContactForm />
           </div>
-        </div>
+        </Reveal>
       </div>
     </>
   );

@@ -91,4 +91,11 @@ export default function About() {
                 </span>
                 <h3 className="mt-4 font-semibold">{v.title}</h3>
                 <p className="mt-2 text-sm text-ink-500">{v.body}</p>
-             
+              </StaggerItem>
+            ))}
+          </StaggerGroup>
+        </div>
+      </section>
+    </>
+  );
+}
