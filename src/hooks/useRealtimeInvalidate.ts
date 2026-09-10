@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useId } from "react";
 import { useQueryClient, type QueryKey } from "@tanstack/react-query";
 import { supabase } from "../lib/supabase";
 
@@ -14,10 +14,17 @@ import { supabase } from "../lib/supabase";
  */
 export function useRealtimeInvalidate(table: string, queryKeys: QueryKey[]) {
   const queryClient = useQueryClient();
+  // Two components can both subscribe to the same table (e.g. two
+  // <AdvertBanner> placements on one page) — each needs its own channel.
+  // Supabase's realtime client reuses a channel by topic name, so two
+  // hook instances sharing a bare `realtime:${table}` name collide the
+  // moment the second one calls `.subscribe()`. useId() keeps every
+  // instance's channel unique.
+  const instanceId = useId();
 
   useEffect(() => {
     const channel = supabase
-      .channel(`realtime:${table}`)
+      .channel(`realtime:${table}:${instanceId}`)
       .on("postgres_changes", { event: "*", schema: "public", table }, () => {
         for (const key of queryKeys) {
           queryClient.invalidateQueries({ queryKey: key });
@@ -29,5 +36,5 @@ export function useRealtimeInvalidate(table: string, queryKeys: QueryKey[]) {
       supabase.removeChannel(channel);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- queryKeys is expected to be a stable literal at each call site
-  }, [table, queryClient]);
+  }, [table, instanceId, queryClient]);
 }
