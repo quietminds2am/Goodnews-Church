@@ -39,6 +39,7 @@ export function Reveal({
   return (
     <Component
       className={className}
+      style={{ transformPerspective: 1000 }}
       initial="hidden"
       whileInView="show"
       viewport={revealViewport}

@@ -5,6 +5,7 @@ import { Seo } from "../../components/seo/Seo";
 import { classNames } from "../../lib/utils";
 import { useSiteSettings } from "../../context/SiteSettingsContext";
 import { Reveal } from "../../components/motion/Reveal";
+import { Hero3DBackground } from "../../components/motion/Hero3DBackground";
 import { StaggerGroup, StaggerItem } from "../../components/motion/StaggerGroup";
 
 export default function FAQ() {
@@ -48,10 +49,11 @@ export default function FAQ() {
     <>
       <Seo title="Frequently Asked Questions" path="/faq" description="Answers to common questions about visiting and joining us." jsonLd={jsonLd} />
 
-      <section className="bg-ink-900 py-16 text-white sm:py-20">
-        <Reveal className="container-page">
+      <section className="relative overflow-hidden py-16 text-white sm:py-20">
+        <Hero3DBackground />
+        <Reveal className="container-page relative">
           <p className="text-sm font-semibold uppercase tracking-widest text-brand-300">Have Questions?</p>
-          <h1 className="mt-3 text-3xl font-semibold sm:text-4xl">Frequently Asked Questions</h1>
+          <h1 className="mt-3 text-3xl font-semibold text-white sm:text-4xl">Frequently Asked Questions</h1>
         </Reveal>
       </section>
 

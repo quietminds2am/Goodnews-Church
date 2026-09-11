@@ -54,7 +54,7 @@ export function StaggerItem({ children, as = "div", className }: { children: Rea
   }
   const Component = ITEM_TAGS[as];
   return (
-    <Component className={className} variants={fadeUp}>
+    <Component className={className} style={{ transformPerspective: 1000 }} variants={fadeUp}>
       {children}
     </Component>
   );

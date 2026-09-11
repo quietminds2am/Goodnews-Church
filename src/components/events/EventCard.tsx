@@ -1,17 +1,13 @@
 import { Link } from "react-router-dom";
 import { CalendarDays, MapPin } from "lucide-react";
-import { motion } from "framer-motion";
 import type { EventRow } from "../../types/database";
 import { formatShortDate, formatTime } from "../../lib/utils";
 import { SocialLinksRow } from "./SocialLinksRow";
+import { Tilt } from "../motion/Tilt";
 
 export function EventCard({ event }: { event: EventRow }) {
   return (
-    <motion.article
-      className="card group flex flex-col overflow-hidden"
-      whileHover={{ y: -4, boxShadow: "0 8px 24px rgba(13,15,19,0.12)" }}
-      transition={{ duration: 0.2, ease: "easeOut" }}
-    >
+    <Tilt as="article" className="card group flex flex-col overflow-hidden" strength={7}>
       <Link to={`/events/${event.slug}`} className="block aspect-[4/3] w-full overflow-hidden bg-ink-100">
         {event.flyer_url ? (
           <img
@@ -62,6 +58,6 @@ export function EventCard({ event }: { event: EventRow }) {
           {event.status === "past" ? "View recap →" : "View details →"}
         </Link>
       </div>
-    </motion.article>
+    </Tilt>
   );
 }

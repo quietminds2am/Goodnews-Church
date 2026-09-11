@@ -3,7 +3,9 @@ import { SectionHeading } from "../../components/ui/SectionHeading";
 import { useSiteSettings } from "../../context/SiteSettingsContext";
 import { Heart, BookOpen, Users } from "lucide-react";
 import { Reveal } from "../../components/motion/Reveal";
+import { Hero3DBackground } from "../../components/motion/Hero3DBackground";
 import { StaggerGroup, StaggerItem } from "../../components/motion/StaggerGroup";
+import { Tilt } from "../../components/motion/Tilt";
 
 const VALUES = [
   {
@@ -34,10 +36,11 @@ export default function About() {
         description={`Learn about ${settings.church_name}, our mission, and our leadership under ${settings.pastor_name}.`}
       />
 
-      <section className="bg-ink-900 py-16 text-white sm:py-20">
-        <Reveal className="container-page">
+      <section className="relative overflow-hidden py-16 text-white sm:py-20">
+        <Hero3DBackground />
+        <Reveal className="container-page relative">
           <p className="text-sm font-semibold uppercase tracking-widest text-brand-300">About Us</p>
-          <h1 className="mt-3 max-w-2xl text-3xl font-semibold sm:text-4xl">{settings.church_name}</h1>
+          <h1 className="mt-3 max-w-2xl text-3xl font-semibold text-white sm:text-4xl">{settings.church_name}</h1>
           <p className="mt-4 max-w-2xl text-ink-200">{settings.tagline}</p>
         </Reveal>
       </section>
@@ -59,21 +62,23 @@ export default function About() {
             </div>
           </Reveal>
 
-          <Reveal className="card p-6 sm:p-8" delay={0.1}>
-            <h2 className="text-xl font-semibold">Leadership</h2>
-            <div className="mt-4 flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-50 text-lg font-semibold text-brand-600">
-                {settings.pastor_name
-                  .split(" ")
-                  .slice(0, 2)
-                  .map((n) => n[0])
-                  .join("")}
+          <Reveal delay={0.1}>
+            <Tilt className="card p-6 sm:p-8" strength={6}>
+              <h2 className="text-xl font-semibold">Leadership</h2>
+              <div className="mt-4 flex items-center gap-4">
+                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-50 text-lg font-semibold text-brand-600">
+                  {settings.pastor_name
+                    .split(" ")
+                    .slice(0, 2)
+                    .map((n) => n[0])
+                    .join("")}
+                </div>
+                <div>
+                  <p className="font-semibold text-ink-900">{settings.pastor_name}</p>
+                  <p className="text-sm text-ink-500">{settings.pastor_title}</p>
+                </div>
               </div>
-              <div>
-                <p className="font-semibold text-ink-900">{settings.pastor_name}</p>
-                <p className="text-sm text-ink-500">{settings.pastor_title}</p>
-              </div>
-            </div>
+            </Tilt>
           </Reveal>
         </div>
       </section>
@@ -85,12 +90,14 @@ export default function About() {
           </Reveal>
           <StaggerGroup className="mt-10 grid gap-6 sm:grid-cols-3">
             {VALUES.map((v) => (
-              <StaggerItem key={v.title} className="card p-6 text-center">
-                <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-brand-50 text-brand-600">
-                  <v.icon className="h-6 w-6" aria-hidden />
-                </span>
-                <h3 className="mt-4 font-semibold">{v.title}</h3>
-                <p className="mt-2 text-sm text-ink-500">{v.body}</p>
+              <StaggerItem key={v.title}>
+                <Tilt className="card p-6 text-center" strength={7}>
+                  <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-brand-50 text-brand-600">
+                    <v.icon className="h-6 w-6" aria-hidden />
+                  </span>
+                  <h3 className="mt-4 font-semibold">{v.title}</h3>
+                  <p className="mt-2 text-sm text-ink-500">{v.body}</p>
+                </Tilt>
               </StaggerItem>
             ))}
           </StaggerGroup>
