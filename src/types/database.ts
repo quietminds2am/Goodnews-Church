@@ -76,6 +76,9 @@ export interface EmailCampaign {
   sent_at: string | null;
   related_event_id: string | null;
   created_by: string | null;
+  /** Email address actually used to send (e.g. "Church Name <goodnewsyouthareahq@gmail.com>") —
+   * set by api/send-campaign.ts from getFromAddress(), never from the sending admin's own account. */
+  sender_email: string | null;
   recipient_count: number;
   created_at: string;
   updated_at: string;

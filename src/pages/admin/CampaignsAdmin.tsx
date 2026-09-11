@@ -140,6 +140,7 @@ export default function CampaignsAdmin() {
                 <th className="px-4 py-3 font-medium">Subject</th>
                 <th className="px-4 py-3 font-medium">Type</th>
                 <th className="px-4 py-3 font-medium">Status</th>
+                <th className="px-4 py-3 font-medium">Sent from</th>
                 <th className="px-4 py-3 font-medium">Recipients</th>
                 <th className="px-4 py-3 font-medium">Sent</th>
                 <th className="px-4 py-3 font-medium text-right">Actions</th>
@@ -153,6 +154,7 @@ export default function CampaignsAdmin() {
                   <td className="px-4 py-3">
                     <span className={`badge ${STATUS_STYLE[c.status]}`}>{c.status}</span>
                   </td>
+                  <td className="px-4 py-3 text-ink-500">{c.sender_email || "—"}</td>
                   <td className="px-4 py-3 text-ink-500">{c.recipient_count || "—"}</td>
                   <td className="px-4 py-3 text-ink-500">{c.sent_at ? formatDate(c.sent_at) : "—"}</td>
                   <td className="px-4 py-3">

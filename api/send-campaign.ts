@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { getSupabaseAdmin } from "./_lib/supabaseAdmin.js";
-import { sendEmail, renderEmailShell } from "./_lib/mailer.js";
+import { sendEmail, renderEmailShell, getFromAddress } from "./_lib/mailer.js";
 import { requireAdmin, HttpError } from "./_lib/auth.js";
 import { isRateLimited, getClientIp } from "./_lib/rateLimit.js";
 
@@ -49,7 +49,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       throw new HttpError(400, "There are no subscribed members to send to yet.");
     }
 
-    await supabaseAdmin.from("email_campaigns").update({ status: "sending" }).eq("id", campaignId);
+    // Resolved once, up front — this is always the church's permanent
+    // sending identity (a hardcoded constant in mailer.ts), never the
+    // sending admin's own account. Failing fast here (before marking the
+    // campaign "sending") means a misconfigured sender shows a clear error
+    // instead of quietly failing every single delivery in the loop below.
+    let senderEmail: string;
+    try {
+      senderEmail = getFromAddress();
+    } catch (err) {
+      throw new HttpError(500, err instanceof Error ? err.message : "Email sender is not configured.");
+    }
+
+    await supabaseAdmin.from("email_campaigns").update({ status: "sending", sender_email: senderEmail }).eq("id", campaignId);
 
     let sentCount = 0;
     const errors: string[] = [];
