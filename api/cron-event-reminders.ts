@@ -1,17 +1,26 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { getSupabaseAdmin } from "./_lib/supabaseAdmin.js";
 import { sendEmail, renderEmailShell } from "./_lib/mailer.js";
+import { isRateLimited, getClientIp } from "./_lib/rateLimit.js";
 
-const SITE_URL = process.env.VITE_SITE_URL || "https://www.goodnewsyouthchurch.org";
+// Placeholder until a real domain is registered — see src/components/seo/Seo.tsx.
+const SITE_URL = process.env.VITE_SITE_URL || "https://goodnews-church.vercel.app";
 const BATCH_SIZE = 50;
 
 /**
  * Scheduled function (see vercel.json → "crons") that emails subscribed
  * members about events happening tomorrow. Triggered automatically by
  * Vercel Cron, which sends the shared CRON_SECRET as a bearer token —
- * verified below so this endpoint can't be abused to spam members.
+ * verified below so this endpoint can't be abused to spam members. Rate
+ * limited on top of that for defense-in-depth consistency with the rest
+ * of api/.
  */
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (isRateLimited(`cron-event-reminders:${getClientIp(req)}`, 5, 60_000)) {
+    res.status(429).json({ error: "Too many requests." });
+    return;
+  }
+
   const authHeader = req.headers.authorization;
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     res.status(401).json({ error: "Unauthorized" });

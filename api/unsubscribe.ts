@@ -1,10 +1,18 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { getSupabaseAdmin } from "./_lib/supabaseAdmin.js";
+import { isRateLimited, getClientIp } from "./_lib/rateLimit.js";
 
 /** Public one-click unsubscribe link used in campaign emails. No auth
  * required by design (that's the point of an unsubscribe link) — the
- * random, unguessable per-member token is what authorizes the action. */
+ * random, unguessable per-member token is what authorizes the action.
+ * Rate-limited anyway for defense-in-depth consistency with the rest of
+ * api/, even though the 256-bit token isn't brute-forceable in practice. */
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (isRateLimited(`unsubscribe:${getClientIp(req)}`, 20, 60_000)) {
+    res.status(429).send("Too many requests. Please wait a moment and try again.");
+    return;
+  }
+
   const token = typeof req.query.token === "string" ? req.query.token : undefined;
 
   if (!token) {

@@ -5,7 +5,10 @@
 import { writeFileSync, existsSync } from "node:fs";
 import { createClient } from "@supabase/supabase-js";
 
-const SITE_URL = (process.env.VITE_SITE_URL || "https://www.goodnewsyouthchurch.org").replace(/\/$/, "");
+// Same fallback/override contract as src/components/seo/Seo.tsx — keep the
+// two in sync. Placeholder until a real domain is registered; set
+// VITE_SITE_URL in Vercel once one is, no code change needed then.
+const SITE_URL = (process.env.VITE_SITE_URL || "https://goodnews-church.vercel.app").replace(/\/$/, "");
 
 const STATIC_ROUTES = [
   { path: "/", priority: "1.0", changefreq: "weekly" },

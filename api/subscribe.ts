@@ -7,7 +7,8 @@ import { randomToken } from "./_lib/token.js";
 import { isRateLimited, getClientIp } from "./_lib/rateLimit.js";
 import { HttpError } from "./_lib/auth.js";
 
-const SITE_URL = process.env.VITE_SITE_URL || "https://www.goodnewsyouthchurch.org";
+// Placeholder until a real domain is registered — see src/components/seo/Seo.tsx.
+const SITE_URL = process.env.VITE_SITE_URL || "https://goodnews-church.vercel.app";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_RE = /^[0-9+()\-\s]{7,20}$/;
 
@@ -43,7 +44,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (typeof email !== "string" || !EMAIL_RE.test(email.trim())) {
       throw new HttpError(400, "Enter a valid email address.");
     }
-    if (phone !== undefined && phone !== "" && (typeof phone !== "string" || !PHONE_RE.test(phone.trim()))) {
+    // `!= null` (loose) catches both undefined AND null in one check — the
+    // client sends `phone: values.phone || null` when the field is empty,
+    // so `phone !== undefined` alone let `null` fall through to the
+    // typeof/regex check below and fail every submission with no phone.
+    if (phone != null && phone !== "" && (typeof phone !== "string" || !PHONE_RE.test(phone.trim()))) {
       throw new HttpError(400, "Enter a valid phone number.");
     }
 

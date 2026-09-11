@@ -10,7 +10,11 @@ interface SeoProps {
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
-const SITE_URL = (import.meta.env.VITE_SITE_URL as string | undefined) ?? "https://www.goodnewsyouthchurch.org";
+// Falls back to the live Vercel URL — this is a placeholder until a real
+// domain is registered. Once one is, set VITE_SITE_URL in Vercel's project
+// environment variables to the new domain and redeploy; that takes
+// precedence over this fallback automatically, no code change needed.
+const SITE_URL = (import.meta.env.VITE_SITE_URL as string | undefined) ?? "https://goodnews-church.vercel.app";
 
 export function Seo({ title, description, path = "/", image, noindex = false, jsonLd }: SeoProps) {
   const { settings } = useSiteSettings();

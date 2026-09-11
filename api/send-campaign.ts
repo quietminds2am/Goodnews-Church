@@ -4,7 +4,8 @@ import { sendEmail, renderEmailShell, getFromAddress } from "./_lib/mailer.js";
 import { requireAdmin, HttpError } from "./_lib/auth.js";
 import { isRateLimited, getClientIp } from "./_lib/rateLimit.js";
 
-const SITE_URL = process.env.VITE_SITE_URL || "https://www.goodnewsyouthchurch.org";
+// Placeholder until a real domain is registered — see src/components/seo/Seo.tsx.
+const SITE_URL = process.env.VITE_SITE_URL || "https://goodnews-church.vercel.app";
 const BATCH_SIZE = 50; // sent concurrently per batch, regardless of email provider
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
