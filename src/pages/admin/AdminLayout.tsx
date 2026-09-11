@@ -110,7 +110,7 @@ export default function AdminLayout() {
         </div>
       )}
 
-      <div className="flex flex-1 flex-col">
+      <div className="flex min-w-0 flex-1 flex-col">
         <header className="flex h-16 items-center justify-between border-b border-ink-100 bg-white px-4 lg:px-8">
           <button
             className="rounded p-2 text-ink-700 hover:bg-ink-100 lg:hidden"
@@ -134,8 +134,8 @@ export default function AdminLayout() {
             content (big tables) gets its own overflow-x-auto wrapper
             already (see e.g. MembersAdmin/CampaignsAdmin) and scrolls
             inside this fixed width rather than growing the page. */}
-        <main className="flex-1 overflow-x-hidden p-4 lg:p-8">
-          <div className="mx-auto w-full max-w-[1400px]">
+        <main className="min-w-0 flex-1 overflow-x-hidden p-4 lg:p-8">
+          <div className="mx-auto w-full min-w-0 max-w-[1400px]">
             <Outlet />
           </div>
         </main>
