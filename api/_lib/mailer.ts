@@ -98,35 +98,84 @@ export async function sendEmail(opts: { to: string; subject: string; html: strin
   if (error) throw new Error(error.message ?? "Resend failed to send the email.");
 }
 
-/** Wraps campaign HTML in a minimal, church-branded email shell. */
-export function renderEmailShell(opts: { title: string; bodyHtml: string; unsubscribeUrl?: string }): string {
+export interface EmailBrandingOptions {
+  logoUrl?: string | null;
+  accentColor?: string;
+  footerNote?: string;
+}
+
+/** Renders a solid-color button, reused by any template that needs a CTA
+ * (event reminders, campaign links). Table-based for email-client support. */
+export function renderEmailButton(text: string, url: string, accentColor = "#c96f22"): string {
+  return `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:24px 0 4px;">
+    <tr>
+      <td style="border-radius:8px;background:${accentColor};">
+        <a href="${url}" style="display:inline-block;padding:12px 26px;font-size:14px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:8px;">${escapeHtml(text)}</a>
+      </td>
+    </tr>
+  </table>`;
+}
+
+/**
+ * The one email shell every outgoing message is wrapped in — campaigns, the
+ * subscriber welcome email, event reminders, and contact-form notifications
+ * all render through this, so a branding change (logo/accent color/footer
+ * note, admin-editable at /admin/email-template) updates every send path at
+ * once with zero drift. `unsubscribeUrl` doubles as "is this member-facing":
+ * present for anything a subscriber receives (shows the footer note + an
+ * unsubscribe link), omitted for internal notifications like a new contact
+ * message, which get a plain minimal footer instead.
+ */
+export function renderEmailShell(opts: {
+  title: string;
+  bodyHtml: string;
+  unsubscribeUrl?: string;
+  branding?: EmailBrandingOptions;
+}): string {
+  const accent = opts.branding?.accentColor || "#c96f22";
+  const logoUrl = opts.branding?.logoUrl;
+  const footerNote = opts.branding?.footerNote?.trim();
+  const isMemberFacing = Boolean(opts.unsubscribeUrl);
+
+  const headerHtml = logoUrl
+    ? `<img src="${escapeAttr(logoUrl)}" alt="${escapeAttr(CHURCH_DISPLAY_NAME)}" height="40" style="height:40px;width:auto;display:block;" />`
+    : `<p style="margin:0;color:#ffffff;font-size:17px;font-weight:700;letter-spacing:0.2px;">${escapeHtml(CHURCH_DISPLAY_NAME)}</p>`;
+
+  const footerHtml = isMemberFacing
+    ? `${footerNote ? `<p style="margin:0 0 10px;font-size:12px;line-height:1.6;color:#4d5865;">${escapeHtml(footerNote)}</p>` : ""}
+       <p style="margin:0;font-size:12px;color:#9aa2ab;">
+         You're receiving this because you subscribed to updates from ${escapeHtml(CHURCH_DISPLAY_NAME)}.
+         <a href="${opts.unsubscribeUrl}" style="color:#9aa2ab;text-decoration:underline;">Unsubscribe</a>
+       </p>`
+    : `<p style="margin:0;font-size:12px;color:#9aa2ab;">Sent automatically by the ${escapeHtml(CHURCH_DISPLAY_NAME)} website.</p>`;
+
   return `<!doctype html>
 <html>
-  <body style="margin:0;padding:0;background:#f6f7f8;font-family:Arial,Helvetica,sans-serif;color:#171b21;">
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f6f7f8;padding:24px 0;">
+  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /></head>
+  <body style="margin:0;padding:0;background:#eef0f2;font-family:-apple-system,Segoe UI,Roboto,Arial,Helvetica,sans-serif;color:#171b21;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#eef0f2;padding:32px 16px;">
       <tr>
         <td align="center">
-          <table role="presentation" width="100%" style="max-width:560px;background:#ffffff;border-radius:12px;overflow:hidden;">
+          <table role="presentation" width="100%" style="max-width:580px;background:#ffffff;border-radius:14px;overflow:hidden;box-shadow:0 1px 3px rgba(13,15,19,0.08),0 8px 24px rgba(13,15,19,0.06);">
+            <tr><td style="height:5px;background:${accent};line-height:5px;font-size:0;">&nbsp;</td></tr>
             <tr>
-              <td style="background:#171b21;padding:24px 32px;">
-                <p style="margin:0;color:#ffffff;font-size:18px;font-weight:700;">RCCG Goodnews Area Youth Church HQ</p>
+              <td style="background:#171b21;padding:22px 32px;">
+                ${headerHtml}
               </td>
             </tr>
             <tr>
-              <td style="padding:32px;">
-                <h1 style="margin:0 0 16px;font-size:20px;">${escapeHtml(opts.title)}</h1>
-                <div style="font-size:15px;line-height:1.6;color:#37404b;">${opts.bodyHtml}</div>
+              <td style="padding:36px 32px 8px;">
+                <h1 style="margin:0 0 18px;font-size:21px;line-height:1.3;color:#0d0f13;">${escapeHtml(opts.title)}</h1>
+                <div style="font-size:15px;line-height:1.65;color:#37404b;">${opts.bodyHtml}</div>
               </td>
             </tr>
             <tr>
-              <td style="padding:20px 32px;border-top:1px solid #e9ebee;">
-                <p style="margin:0;font-size:12px;color:#78849699;">
-                  You're receiving this because you subscribed to updates from RCCG Goodnews Area Youth Church HQ.
-                  ${opts.unsubscribeUrl ? `<a href="${opts.unsubscribeUrl}" style="color:#78849699;">Unsubscribe</a>` : ""}
-                </p>
+              <td style="padding:24px 32px 28px;border-top:1px solid #eef0f2;margin-top:8px;">
+                ${footerHtml}
               </td>
             </tr>
           </table>
+          <p style="margin:18px 0 0;font-size:11px;color:#9aa2ab;">${escapeHtml(CHURCH_DISPLAY_NAME)}</p>
         </td>
       </tr>
     </table>
@@ -136,4 +185,7 @@ export function renderEmailShell(opts: { title: string; bodyHtml: string; unsubs
 
 function escapeHtml(input: string): string {
   return input.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] as string));
+}
+function escapeAttr(input: string): string {
+  return escapeHtml(input);
 }

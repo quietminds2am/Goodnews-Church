@@ -57,6 +57,9 @@ export interface Member {
   full_name: string | null;
   email: string;
   phone: string | null;
+  date_of_birth: string | null;
+  gender: string | null;
+  department: string | null;
   subscribed: boolean;
   source: string | null;
   unsubscribe_token: string;

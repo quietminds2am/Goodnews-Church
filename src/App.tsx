@@ -29,6 +29,7 @@ const AnnouncementsAdmin = lazy(() => import("./pages/admin/AnnouncementsAdmin")
 const EventsAdmin = lazy(() => import("./pages/admin/EventsAdmin"));
 const MembersAdmin = lazy(() => import("./pages/admin/MembersAdmin"));
 const CampaignsAdmin = lazy(() => import("./pages/admin/CampaignsAdmin"));
+const EmailTemplateAdmin = lazy(() => import("./pages/admin/EmailTemplateAdmin"));
 const BrandAssetsAdmin = lazy(() => import("./pages/admin/BrandAssetsAdmin"));
 const AdvertsAdmin = lazy(() => import("./pages/admin/AdvertsAdmin"));
 const SettingsAdmin = lazy(() => import("./pages/admin/SettingsAdmin"));
@@ -108,6 +109,7 @@ export default function App() {
           <Route path="events" element={<EventsAdmin />} />
           <Route path="members" element={<MembersAdmin />} />
           <Route path="campaigns" element={<CampaignsAdmin />} />
+          <Route path="email-template" element={<EmailTemplateAdmin />} />
           <Route path="brand-assets" element={<BrandAssetsAdmin />} />
           <Route path="adverts" element={<AdvertsAdmin />} />
           <Route path="settings" element={<SettingsAdmin />} />

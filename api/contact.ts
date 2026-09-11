@@ -2,6 +2,7 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { getSupabaseAdmin } from "./_lib/supabaseAdmin.js";
 import { sendEmail, getFromAddress, CHURCH_EMAIL } from "./_lib/mailer.js";
 import { renderContactNotificationEmail } from "./_lib/emailTemplates.js";
+import { getEmailBranding } from "./_lib/emailBranding.js";
 import { isRateLimited, getClientIp } from "./_lib/rateLimit.js";
 import { HttpError } from "./_lib/auth.js";
 
@@ -77,6 +78,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Notifying the church is best-effort — the message is already saved,
     // so a slow/failed email must never turn into an error for the visitor.
     try {
+      const branding = await getEmailBranding();
       await sendEmail({
         to: getContactNotificationEmail(),
         subject: `New contact message: ${subject.trim()}`,
@@ -86,6 +88,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           phone: phone ? phone.trim() : null,
           subject: subject.trim(),
           message: message.trim(),
+          branding,
         }),
       });
     } catch (emailErr) {

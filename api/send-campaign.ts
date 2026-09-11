@@ -3,6 +3,7 @@ import { getSupabaseAdmin } from "./_lib/supabaseAdmin.js";
 import { sendEmail, renderEmailShell, getFromAddress } from "./_lib/mailer.js";
 import { requireAdmin, HttpError } from "./_lib/auth.js";
 import { isRateLimited, getClientIp } from "./_lib/rateLimit.js";
+import { getEmailBranding } from "./_lib/emailBranding.js";
 
 // Placeholder until a real domain is registered — see src/components/seo/Seo.tsx.
 const SITE_URL = process.env.VITE_SITE_URL || "https://goodnews-church.vercel.app";
@@ -64,6 +65,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     await supabaseAdmin.from("email_campaigns").update({ status: "sending", sender_email: senderEmail }).eq("id", campaignId);
 
+    const branding = await getEmailBranding();
     let sentCount = 0;
     const errors: string[] = [];
 
@@ -78,6 +80,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
               title: campaign.subject,
               bodyHtml: campaign.body_html,
               unsubscribeUrl: `${SITE_URL}/api/unsubscribe?token=${member.unsubscribe_token}`,
+              branding,
             }),
           })
         )

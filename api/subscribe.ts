@@ -3,6 +3,7 @@ import { getSupabaseAdmin } from "./_lib/supabaseAdmin.js";
 import { sendEmail } from "./_lib/mailer.js";
 import { renderWelcomeEmail } from "./_lib/emailTemplates.js";
 import { getSiteSettingsForEmail } from "./_lib/siteSettings.js";
+import { getEmailBranding } from "./_lib/emailBranding.js";
 import { randomToken } from "./_lib/token.js";
 import { isRateLimited, getClientIp } from "./_lib/rateLimit.js";
 import { HttpError } from "./_lib/auth.js";
@@ -78,7 +79,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Welcome email is best-effort and happens after the response is sent —
     // a slow or failed send should never delay or break the signup itself.
     try {
-      const settings = await getSiteSettingsForEmail();
+      const [settings, branding] = await Promise.all([getSiteSettingsForEmail(), getEmailBranding()]);
       await sendEmail({
         to: email.trim().toLowerCase(),
         subject: `Welcome to ${settings.church_name}!`,
@@ -86,6 +87,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           fullName: full_name,
           settings,
           unsubscribeUrl: `${SITE_URL}/api/unsubscribe?token=${unsubscribeToken}`,
+          branding,
         }),
       });
     } catch (emailErr) {

@@ -1,7 +1,8 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { getSupabaseAdmin } from "./_lib/supabaseAdmin.js";
-import { sendEmail, renderEmailShell } from "./_lib/mailer.js";
+import { sendEmail, renderEmailShell, renderEmailButton } from "./_lib/mailer.js";
 import { isRateLimited, getClientIp } from "./_lib/rateLimit.js";
+import { getEmailBranding } from "./_lib/emailBranding.js";
 
 // Placeholder until a real domain is registered — see src/components/seo/Seo.tsx.
 const SITE_URL = process.env.VITE_SITE_URL || "https://goodnews-church.vercel.app";
@@ -57,6 +58,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return;
     }
 
+    const branding = await getEmailBranding();
     let totalSent = 0;
 
     for (const event of events) {
@@ -65,7 +67,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         event.start_time ? ` at ${escapeHtml(event.start_time)}` : ""
       }${event.location ? ` at ${escapeHtml(event.location)}` : ""}.</p>
         <p>${escapeHtml(event.description).slice(0, 300)}</p>
-        <p><a href="${SITE_URL}/events/${event.slug}" style="color:#c96f22;font-weight:600;">View event details →</a></p>
+        ${renderEmailButton("View event details →", `${SITE_URL}/events/${event.slug}`, branding.accentColor)}
       `;
 
       const campaignInsert = await supabaseAdmin
@@ -93,6 +95,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 title: `${event.title} is tomorrow!`,
                 bodyHtml,
                 unsubscribeUrl: `${SITE_URL}/api/unsubscribe?token=${member.unsubscribe_token}`,
+                branding,
               }),
             })
           )

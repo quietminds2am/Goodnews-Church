@@ -6,6 +6,7 @@ import {
   CalendarDays,
   Users,
   Send,
+  Mail,
   Image as ImageIcon,
   BadgePercent,
   Settings,
@@ -24,6 +25,7 @@ const NAV_ITEMS = [
   { to: "/admin/events", label: "Events & Flyers", icon: CalendarDays },
   { to: "/admin/members", label: "Members", icon: Users },
   { to: "/admin/campaigns", label: "Email Campaigns", icon: Send },
+  { to: "/admin/email-template", label: "Email Template", icon: Mail },
   { to: "/admin/brand-assets", label: "Brand Assets", icon: ImageIcon },
   { to: "/admin/adverts", label: "Adverts", icon: BadgePercent },
   { to: "/admin/settings", label: "Site Settings", icon: Settings },
@@ -127,8 +129,15 @@ export default function AdminLayout() {
             </div>
           </div>
         </header>
-        <main className="flex-1 p-4 lg:p-8">
-          <Outlet />
+        {/* Fixed width, not just padding — on a very wide monitor the page
+            itself stays capped instead of stretching edge to edge. Wide
+            content (big tables) gets its own overflow-x-auto wrapper
+            already (see e.g. MembersAdmin/CampaignsAdmin) and scrolls
+            inside this fixed width rather than growing the page. */}
+        <main className="flex-1 overflow-x-hidden p-4 lg:p-8">
+          <div className="mx-auto w-full max-w-[1400px]">
+            <Outlet />
+          </div>
         </main>
       </div>
     </div>

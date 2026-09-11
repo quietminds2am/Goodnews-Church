@@ -1,4 +1,4 @@
-import { renderEmailShell } from "./mailer.js";
+import { renderEmailShell, type EmailBrandingOptions } from "./mailer.js";
 import type { EmailSiteSettings } from "./siteSettings.js";
 
 /** Sent once, right after someone subscribes to the newsletter. */
@@ -6,6 +6,7 @@ export function renderWelcomeEmail(opts: {
   fullName?: string | null;
   settings: EmailSiteSettings;
   unsubscribeUrl: string;
+  branding?: EmailBrandingOptions;
 }): string {
   const firstName = opts.fullName?.trim().split(/\s+/)[0];
   const greeting = firstName ? `Hi ${escapeHtml(firstName)},` : "Hello,";
@@ -52,6 +53,7 @@ export function renderWelcomeEmail(opts: {
     title: `Welcome to ${opts.settings.church_name}!`,
     bodyHtml,
     unsubscribeUrl: opts.unsubscribeUrl,
+    branding: opts.branding,
   });
 }
 
@@ -62,6 +64,7 @@ export function renderContactNotificationEmail(opts: {
   phone?: string | null;
   subject: string;
   message: string;
+  branding?: EmailBrandingOptions;
 }): string {
   const bodyHtml = `
     <p style="margin:0 0 16px;">You've received a new message from the website contact form.</p>
@@ -75,7 +78,7 @@ export function renderContactNotificationEmail(opts: {
     <p style="margin:0;white-space:pre-line;color:#37404b;">${escapeHtml(opts.message)}</p>
   `;
 
-  return renderEmailShell({ title: "New contact form message", bodyHtml });
+  return renderEmailShell({ title: "New contact form message", bodyHtml, branding: opts.branding });
 }
 
 function escapeHtml(input: string): string {
