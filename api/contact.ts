@@ -1,9 +1,9 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { getSupabaseAdmin } from "./_lib/supabaseAdmin";
-import { sendEmail, getFromAddress } from "./_lib/mailer";
-import { renderContactNotificationEmail } from "./_lib/emailTemplates";
-import { isRateLimited, getClientIp } from "./_lib/rateLimit";
-import { HttpError } from "./_lib/auth";
+import { getSupabaseAdmin } from "./_lib/supabaseAdmin.js";
+import { sendEmail, getFromAddress } from "./_lib/mailer.js";
+import { renderContactNotificationEmail } from "./_lib/emailTemplates.js";
+import { isRateLimited, getClientIp } from "./_lib/rateLimit.js";
+import { HttpError } from "./_lib/auth.js";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_RE = /^[0-9+()\-\s]{7,20}$/;

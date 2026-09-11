@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { getSupabaseAdmin } from "./_lib/supabaseAdmin";
+import { getSupabaseAdmin } from "./_lib/supabaseAdmin.js";
 
 /** Public one-click unsubscribe link used in campaign emails. No auth
  * required by design (that's the point of an unsubscribe link) — the

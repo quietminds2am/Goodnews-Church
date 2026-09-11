@@ -1,5 +1,5 @@
-import { renderEmailShell } from "./mailer";
-import type { EmailSiteSettings } from "./siteSettings";
+import { renderEmailShell } from "./mailer.js";
+import type { EmailSiteSettings } from "./siteSettings.js";
 
 /** Sent once, right after someone subscribes to the newsletter. */
 export function renderWelcomeEmail(opts: {

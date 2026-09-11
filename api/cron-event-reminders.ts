@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { getSupabaseAdmin } from "./_lib/supabaseAdmin";
-import { sendEmail, renderEmailShell } from "./_lib/mailer";
+import { getSupabaseAdmin } from "./_lib/supabaseAdmin.js";
+import { sendEmail, renderEmailShell } from "./_lib/mailer.js";
 
 const SITE_URL = process.env.VITE_SITE_URL || "https://www.goodnewsyouthchurch.org";
 const BATCH_SIZE = 50;

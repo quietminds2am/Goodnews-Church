@@ -1,4 +1,4 @@
-import { getSupabaseAdmin } from "./supabaseAdmin";
+import { getSupabaseAdmin } from "./supabaseAdmin.js";
 
 /** Minimal shape of site_settings actually needed for outgoing emails. */
 export interface EmailSiteSettings {

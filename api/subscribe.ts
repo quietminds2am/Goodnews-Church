@@ -1,11 +1,11 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { getSupabaseAdmin } from "./_lib/supabaseAdmin";
-import { sendEmail } from "./_lib/mailer";
-import { renderWelcomeEmail } from "./_lib/emailTemplates";
-import { getSiteSettingsForEmail } from "./_lib/siteSettings";
-import { randomToken } from "./_lib/token";
-import { isRateLimited, getClientIp } from "./_lib/rateLimit";
-import { HttpError } from "./_lib/auth";
+import { getSupabaseAdmin } from "./_lib/supabaseAdmin.js";
+import { sendEmail } from "./_lib/mailer.js";
+import { renderWelcomeEmail } from "./_lib/emailTemplates.js";
+import { getSiteSettingsForEmail } from "./_lib/siteSettings.js";
+import { randomToken } from "./_lib/token.js";
+import { isRateLimited, getClientIp } from "./_lib/rateLimit.js";
+import { HttpError } from "./_lib/auth.js";
 
 const SITE_URL = process.env.VITE_SITE_URL || "https://www.goodnewsyouthchurch.org";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { getSupabaseAdmin } from "./_lib/supabaseAdmin";
-import { requireAdmin, HttpError } from "./_lib/auth";
-import { isRateLimited, getClientIp } from "./_lib/rateLimit";
+import { getSupabaseAdmin } from "./_lib/supabaseAdmin.js";
+import { requireAdmin, HttpError } from "./_lib/auth.js";
+import { isRateLimited, getClientIp } from "./_lib/rateLimit.js";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
