@@ -26,9 +26,8 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
     { label: "House Fellowship", time: "Fridays, 6:00 PM – 7:30 PM" },
   ],
   socials: [
-    { platform: "instagram", url: "https://instagram.com/", label: "@goodnewsyouthchurch" },
-    { platform: "facebook", url: "https://facebook.com/", label: "Goodnews Youth Church" },
-    { platform: "youtube", url: "https://youtube.com/", label: "Goodnews Youth Church" },
+    { platform: "facebook", url: "https://www.facebook.com/onifade.d.kayode/", label: "Goodnews Youth Church" },
+    { platform: "tiktok", url: "https://www.tiktok.com/@rccg.goodnewsyouthareahq?_r=1&_t=ZS-99dclFihm4I", label: "@goodnewsyouthchurch" },
   ],
   seo_default_title: "RCCG Goodnews Area Youth Church HQ",
   seo_default_description:

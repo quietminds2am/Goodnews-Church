@@ -2,12 +2,11 @@ import { Link } from "react-router-dom";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { useSiteSettings } from "../../context/SiteSettingsContext";
 import { NewsletterForm } from "../forms/NewsletterForm";
-import { InstagramIcon, FacebookIcon, YoutubeIcon } from "../icons/SocialIcons";
+import { FacebookIcon, TiktokIcon } from "../icons/SocialIcons";
 
 const socialIcon = {
-  instagram: InstagramIcon,
   facebook: FacebookIcon,
-  youtube: YoutubeIcon,
+  tiktok:  TiktokIcon,
 } as const;
 
 export function Footer() {
