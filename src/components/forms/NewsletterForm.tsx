@@ -4,8 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import { CheckCircle2 } from "lucide-react";
 import { newsletterSchema, type NewsletterInput } from "../../lib/validators";
-import { supabase } from "../../lib/supabase";
-import { randomToken, classNames } from "../../lib/utils";
+import { classNames } from "../../lib/utils";
 import { HoneypotField } from "../ui/Field";
 
 export function NewsletterForm({ variant = "light" }: { variant?: "light" | "dark" }) {
@@ -23,28 +22,25 @@ export function NewsletterForm({ variant = "light" }: { variant?: "light" | "dar
     if (values.hp_field) return; // bot caught by honeypot — drop silently
     setServerError(null);
 
-    const { error } = await supabase.from("members").insert({
-      full_name: values.full_name,
-      email: values.email,
-      phone: values.phone || null,
-      subscribed: true,
-      source: "newsletter_footer",
-      unsubscribe_token: randomToken(),
-    });
-
-    if (error) {
-      // Unique violation → already subscribed; treat as a soft success.
-      if (error.code === "23505") {
-        setStatus("success");
-        reset();
-        return;
-      }
-      setServerError("We couldn't save your details right now. Please try again shortly.");
+    try {
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          full_name: values.full_name,
+          email: values.email,
+          phone: values.phone || null,
+          source: "newsletter_footer",
+        }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(body?.error || "We couldn't save your details right now. Please try again shortly.");
+      setStatus("success");
+      reset();
+    } catch (err) {
+      setServerError(err instanceof Error ? err.message : "We couldn't save your details right now. Please try again shortly.");
       setStatus("error");
-      return;
     }
-    setStatus("success");
-    reset();
   }
 
   const inputClass = variant === "dark" ? "input bg-white/10 border-white/20 text-white placeholder:text-ink-400" : "input";

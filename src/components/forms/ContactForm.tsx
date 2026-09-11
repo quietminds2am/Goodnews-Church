@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { contactSchema, type ContactInput } from "../../lib/validators";
-import { supabase } from "../../lib/supabase";
 import { TextField, TextareaField, HoneypotField } from "../ui/Field";
 import { Button } from "../ui/Button";
 import { SuccessBanner } from "../ui/States";
@@ -22,20 +21,27 @@ export function ContactForm() {
     if (values.hp_field) return;
     setServerError(null);
 
-    const { error } = await supabase.from("contact_messages").insert({
-      name: values.name,
-      email: values.email,
-      phone: values.phone || null,
-      subject: values.subject,
-      message: values.message,
-    });
-
-    if (error) {
-      setServerError("We couldn't send your message right now. Please try again, or reach us directly by phone or email.");
-      return;
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: values.name,
+          email: values.email,
+          phone: values.phone || null,
+          subject: values.subject,
+          message: values.message,
+        }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(body?.error || "We couldn't send your message right now. Please try again, or reach us directly by phone or email.");
+      setSubmitted(true);
+      reset();
+    } catch (err) {
+      setServerError(
+        err instanceof Error ? err.message : "We couldn't send your message right now. Please try again, or reach us directly by phone or email."
+      );
     }
-    setSubmitted(true);
-    reset();
   }
 
   if (submitted) {

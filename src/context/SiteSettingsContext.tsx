@@ -18,8 +18,8 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   address: "Goodnews Area, Lagos",
   city: "Lagos",
   country: "Nigeria",
-  phone: "+234 800 000 0000",
-  email: "info@goodnewsyouthchurch.org",
+  phone: "08069368008",
+  email: "goodnewsyouthareahq@gmail.com",
   service_times: [
     { label: "Sunday Worship Service", time: "Sundays, 8:00 AM – 10:30 AM" },
     { label: "Midweek Bible Study", time: "Wednesdays, 6:00 PM – 7:30 PM" },
