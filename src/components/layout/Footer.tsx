@@ -6,7 +6,7 @@ import { FacebookIcon, TiktokIcon } from "../icons/SocialIcons";
 
 const socialIcon = {
   facebook: FacebookIcon,
-  tiktok:  TiktokIcon,
+  tiktok: TiktokIcon,
 } as const;
 
 export function Footer() {
@@ -23,8 +23,11 @@ export function Footer() {
             {settings.socials.map((s) => {
               const Icon = socialIcon[s.platform as keyof typeof socialIcon];
               if (!Icon) return null;
+              // Keyed by url, not platform — the church links more than one
+              // account on the same platform (two TikTok pages), and
+              // platform alone collided, silently dropping one.
               return (
-                <li key={s.platform}>
+                <li key={s.url}>
                   <a
                     href={s.url}
                     target="_blank"

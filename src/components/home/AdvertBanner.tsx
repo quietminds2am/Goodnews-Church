@@ -1,3 +1,4 @@
+import { ExternalLink } from "lucide-react";
 import type { AdvertPlacement } from "../../types/database";
 import { useAdverts } from "../../hooks/useAdverts";
 import { StaggerGroup, StaggerItem } from "../motion/StaggerGroup";
@@ -8,29 +9,38 @@ export function AdvertBanner({ placement }: { placement: AdvertPlacement }) {
 
   return (
     <div className="container-page py-6">
-      <StaggerGroup className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {data.map((ad) => {
-          const content = (
-            <img
-              src={ad.image_url}
-              alt={ad.title}
-              loading="lazy"
-              className="w-full rounded-lg border border-ink-100 object-cover shadow-card transition-transform hover:scale-[1.01]"
-            />
-          );
-          return (
-            <StaggerItem key={ad.id}>
-              {ad.link_url ? (
-                <a href={ad.link_url} target="_blank" rel="noopener noreferrer" aria-label={ad.title}>
-                  {content}
-                </a>
-              ) : (
-                content
-              )}
+      {/* Always a horizontal scroller — never reflows into a grid, regardless
+          of viewport width or how many adverts are active. Negative margin +
+          matching padding lets cards bleed to the screen edge on mobile while
+          the section itself stays aligned to container-page. */}
+      <div className="-mx-4 snap-x snap-mandatory overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0">
+        <StaggerGroup className="flex w-max gap-4">
+          {data.map((ad) => (
+            <StaggerItem key={ad.id} className="card flex w-72 shrink-0 snap-start flex-col overflow-hidden sm:w-80">
+              <img
+                src={ad.image_url}
+                alt={ad.title}
+                loading="lazy"
+                className="aspect-[4/3] w-full object-cover"
+              />
+              <div className="flex flex-1 flex-col gap-3 p-4">
+                <h3 className="line-clamp-1 font-semibold text-ink-900">{ad.title}</h3>
+                {ad.link_url && (
+                  <a
+                    href={ad.link_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-outline mt-auto w-full"
+                  >
+                    Visit Website
+                    <ExternalLink className="h-4 w-4" aria-hidden />
+                  </a>
+                )}
+              </div>
             </StaggerItem>
-          );
-        })}
-      </StaggerGroup>
+          ))}
+        </StaggerGroup>
+      </div>
     </div>
   );
 }
