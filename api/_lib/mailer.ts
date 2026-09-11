@@ -1,5 +1,5 @@
-import { Resend } from "resend";
-import nodemailer, { type Transporter } from "nodemailer";
+import type { Resend } from "resend";
+import type { Transporter } from "nodemailer";
 
 /**
  * Email sending, provider-swappable without touching call sites.
@@ -38,14 +38,20 @@ export function getFromAddress(): string {
   return process.env.RESEND_FROM_EMAIL || "Goodnews Youth Church <onboarding@resend.dev>";
 }
 
+// Both SDKs are imported dynamically (only the active provider's module ever
+// loads) so a problem in one provider's package — a bundling issue, a
+// runtime-version mismatch, anything — can't take down the other, and
+// cold starts don't pay for code that won't run.
+
 let gmailTransport: Transporter | null = null;
-function getGmailTransport(): Transporter {
+async function getGmailTransport(): Promise<Transporter> {
   if (gmailTransport) return gmailTransport;
   const user = process.env.GMAIL_USER;
   const pass = process.env.GMAIL_APP_PASSWORD;
   if (!user || !pass) {
     throw new Error("Server is missing GMAIL_USER / GMAIL_APP_PASSWORD environment variables.");
   }
+  const { default: nodemailer } = await import("nodemailer");
   gmailTransport = nodemailer.createTransport({
     service: "gmail",
     auth: { user, pass },
@@ -54,10 +60,11 @@ function getGmailTransport(): Transporter {
 }
 
 let resendClient: Resend | null = null;
-function getResendClient(): Resend {
+async function getResendClient(): Promise<Resend> {
   if (resendClient) return resendClient;
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) throw new Error("Server is missing the RESEND_API_KEY environment variable.");
+  const { Resend } = await import("resend");
   resendClient = new Resend(apiKey);
   return resendClient;
 }
@@ -67,11 +74,13 @@ export async function sendEmail(opts: { to: string; subject: string; html: strin
   const from = getFromAddress();
 
   if (getEmailProvider() === "gmail") {
-    await getGmailTransport().sendMail({ from, to: opts.to, subject: opts.subject, html: opts.html });
+    const transport = await getGmailTransport();
+    await transport.sendMail({ from, to: opts.to, subject: opts.subject, html: opts.html });
     return;
   }
 
-  const { error } = await getResendClient().emails.send({ from, to: opts.to, subject: opts.subject, html: opts.html });
+  const client = await getResendClient();
+  const { error } = await client.emails.send({ from, to: opts.to, subject: opts.subject, html: opts.html });
   if (error) throw new Error(error.message ?? "Resend failed to send the email.");
 }
 

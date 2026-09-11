@@ -98,6 +98,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
     // eslint-disable-next-line no-console
     console.error("send-campaign: unexpected error", err);
-    res.status(500).json({ error: "Something went wrong sending this campaign." });
+    const detail = err instanceof Error ? err.message : String(err);
+    res.status(500).json({ error: `Something went wrong sending this campaign: ${detail}` });
   }
 }
