@@ -62,7 +62,7 @@ export function Header() {
             <LockKeyhole className="h-4 w-4" aria-hidden />
             Admin
           </NavLink>
-          <NavLink to="/contact" className="btn-primary">
+          <NavLink to="/contact" className="btn-primary shrink-0 whitespace-nowrap px-4 py-2 text-sm">
             Get Connected
           </NavLink>
         </div>
